@@ -35,14 +35,8 @@ class GmailAuthenticator:
         if not client_id or not client_secret:
             raise ValueError("GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET must be set in environment")
         
-        # Detect if running locally or deployed
-        # Check for Streamlit Cloud environment variables
-        if os.getenv('STREAMLIT_SERVER_PORT') or os.getenv('STREAMLIT_SERVER_ADDRESS'):
-            # Running on Streamlit Cloud
-            redirect_uri = "https://cold-email-automation-webapp.streamlit.app"
-        else:
-            # Running locally
-            redirect_uri = "http://localhost:8501"
+        # For deployed app, use the deployed URL
+        redirect_uri = "https://cold-email-automation-webapp.streamlit.app"
         
         return {
             "installed": {
@@ -88,13 +82,8 @@ class GmailAuthenticator:
                     client_config = self.get_credentials_from_env()
                     
                     # Ensure redirect URI is properly set
-                    # Detect if running locally or deployed
-                    if os.getenv('STREAMLIT_SERVER_PORT') or os.getenv('STREAMLIT_SERVER_ADDRESS'):
-                        # Running on Streamlit Cloud
-                        redirect_uri = "https://cold-email-automation-webapp.streamlit.app"
-                    else:
-                        # Running locally
-                        redirect_uri = "http://localhost:8501"
+                    # For deployed app, use the deployed URL
+                    redirect_uri = "https://cold-email-automation-webapp.streamlit.app"
                     client_config["installed"]["redirect_uris"] = [redirect_uri]
                     
                     flow = InstalledAppFlow.from_client_config(
@@ -204,13 +193,8 @@ class GmailAuthenticator:
             if 'code' in query_params:
                 # We have an authorization code, complete the flow
                 client_config = self.get_credentials_from_env()
-                # Detect if running locally or deployed
-                if os.getenv('STREAMLIT_SERVER_PORT') or os.getenv('STREAMLIT_SERVER_ADDRESS'):
-                    # Running on Streamlit Cloud
-                    redirect_uri = "https://cold-email-automation-webapp.streamlit.app"
-                else:
-                    # Running locally
-                    redirect_uri = "http://localhost:8501"
+                # For deployed app, use the deployed URL
+                redirect_uri = "https://cold-email-automation-webapp.streamlit.app"
                 
                 flow = InstalledAppFlow.from_client_config(
                     client_config, self.SCOPES, redirect_uri=redirect_uri
