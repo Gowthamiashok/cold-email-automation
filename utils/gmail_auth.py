@@ -35,13 +35,22 @@ class GmailAuthenticator:
         if not client_id or not client_secret:
             raise ValueError("GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET must be set in environment")
         
+        # Detect if running locally or deployed
+        import os
+        if os.getenv('STREAMLIT_SERVER_PORT'):
+            # Running on Streamlit Cloud
+            redirect_uri = "https://cold-email-automation-webapp.streamlit.app"
+        else:
+            # Running locally
+            redirect_uri = "http://localhost:8501"
+        
         return {
             "installed": {
                 "client_id": client_id,
                 "client_secret": client_secret,
                 "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                 "token_uri": "https://oauth2.googleapis.com/token",
-                "redirect_uris": ["http://localhost:8501"]
+                "redirect_uris": [redirect_uri]
             }
         }
     
@@ -79,7 +88,13 @@ class GmailAuthenticator:
                     client_config = self.get_credentials_from_env()
                     
                     # Ensure redirect URI is properly set
-                    redirect_uri = "http://localhost:8501"
+                    # Detect if running locally or deployed
+                    if os.getenv('STREAMLIT_SERVER_PORT'):
+                        # Running on Streamlit Cloud
+                        redirect_uri = "https://cold-email-automation-webapp.streamlit.app"
+                    else:
+                        # Running locally
+                        redirect_uri = "http://localhost:8501"
                     client_config["installed"]["redirect_uris"] = [redirect_uri]
                     
                     flow = InstalledAppFlow.from_client_config(
@@ -102,7 +117,7 @@ class GmailAuthenticator:
                     
                     After authorization, you'll be redirected back to this application.
                     
-                    **Note:** Make sure your Google Cloud Console project has `http://localhost:8501` 
+                    **Note:** Make sure your Google Cloud Console project has the correct redirect URI 
                     added to the authorized redirect URIs.
                     """)
                     
@@ -189,7 +204,13 @@ class GmailAuthenticator:
             if 'code' in query_params:
                 # We have an authorization code, complete the flow
                 client_config = self.get_credentials_from_env()
-                redirect_uri = "http://localhost:8501"
+                # Detect if running locally or deployed
+                if os.getenv('STREAMLIT_SERVER_PORT'):
+                    # Running on Streamlit Cloud
+                    redirect_uri = "https://cold-email-automation-webapp.streamlit.app"
+                else:
+                    # Running locally
+                    redirect_uri = "http://localhost:8501"
                 
                 flow = InstalledAppFlow.from_client_config(
                     client_config, self.SCOPES, redirect_uri=redirect_uri
