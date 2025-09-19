@@ -36,7 +36,8 @@ class GmailAuthenticator:
             raise ValueError("GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET must be set in environment")
         
         # Detect if running locally or deployed
-        if os.getenv('STREAMLIT_SERVER_PORT'):
+        # Check for Streamlit Cloud environment variables
+        if os.getenv('STREAMLIT_SERVER_PORT') or os.getenv('STREAMLIT_SERVER_ADDRESS'):
             # Running on Streamlit Cloud
             redirect_uri = "https://cold-email-automation-webapp.streamlit.app"
         else:
@@ -88,7 +89,7 @@ class GmailAuthenticator:
                     
                     # Ensure redirect URI is properly set
                     # Detect if running locally or deployed
-                    if os.getenv('STREAMLIT_SERVER_PORT'):
+                    if os.getenv('STREAMLIT_SERVER_PORT') or os.getenv('STREAMLIT_SERVER_ADDRESS'):
                         # Running on Streamlit Cloud
                         redirect_uri = "https://cold-email-automation-webapp.streamlit.app"
                     else:
@@ -204,7 +205,7 @@ class GmailAuthenticator:
                 # We have an authorization code, complete the flow
                 client_config = self.get_credentials_from_env()
                 # Detect if running locally or deployed
-                if os.getenv('STREAMLIT_SERVER_PORT'):
+                if os.getenv('STREAMLIT_SERVER_PORT') or os.getenv('STREAMLIT_SERVER_ADDRESS'):
                     # Running on Streamlit Cloud
                     redirect_uri = "https://cold-email-automation-webapp.streamlit.app"
                 else:
